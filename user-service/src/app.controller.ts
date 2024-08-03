@@ -1,12 +1,13 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
+import { EventPattern, MessagePattern } from '@nestjs/microservices';
 
-@Controller('gateway')
+@Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get('test')
-  async test() {
-    return this.appService.test();
+  @MessagePattern({ cmd: 'test' })
+  async getHello() {
+    return this.appService.getHello();
   }
 }

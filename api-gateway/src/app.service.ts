@@ -6,6 +6,6 @@ export class AppService {
   constructor(@Inject('USER_SERVICE') private readonly userService: ClientProxy) {}
 
   async test() {
-    this.userService.send({cmd: 'test'}, {});
+    return this.userService.send({cmd: 'test'}, {});
   }
 }
