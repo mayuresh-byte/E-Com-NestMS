@@ -7,13 +7,13 @@ async function bootstrap() {
     transport: Transport.RMQ,
     options: {
       urls: ['amqp://localhost:5672'],
-      queue: 'user_queue',
+      queue: 'auth_queue',
       queueOptions: {
         durable: false
       },
     },
   });
   await app.listen();
-  console.log('User Service is running');
+  console.log('Auth Service is running');
 }
 bootstrap();

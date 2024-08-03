@@ -3,9 +3,9 @@ import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class AppService {
-  constructor(@Inject('USER_SERVICE') private readonly userService: ClientProxy) {}
+  constructor(@Inject('AUTH_SERVICE') private readonly authService: ClientProxy) {}
 
   async test() {
-    return this.userService.send({cmd: 'test'}, {});
+    return this.authService.send({cmd: 'test'}, {});
   }
 }
