@@ -6,8 +6,6 @@ import { EventPattern, MessagePattern } from '@nestjs/microservices';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @MessagePattern({ cmd: 'test' })
-  async getHello() {
-    return this.appService.getHello();
-  }
+  
+
 }
