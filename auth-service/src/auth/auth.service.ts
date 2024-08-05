@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
@@ -46,5 +46,26 @@ export class AuthService {
         } catch (error) {
             return error;
         }
+    }
+
+    async getProfile(userId: number) {
+        const user = this.userRepository.findOne({where: {id: userId}});
+        if(!user) {
+            throw new NotFoundException('User not found !!');
+        }
+        return user;
+    }
+
+    async updateProfile(data: any) {
+        if(data.updateUserData.password) {
+            data.updateUserData.password = await bcrypt.hash(data.updateUserData.password, 10);
+        }
+        await this.userRepository.update(data.userId, data.updateUserData);
+        return this.getProfile(data.userId);
+    }
+
+    async deleteProfile(userId: any) {
+        const result = await this.userRepository.delete(userId);
+        return result;
     }
 }

@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { MessagePattern } from '@nestjs/microservices';
+import { EventPattern, MessagePattern } from '@nestjs/microservices';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
@@ -14,5 +14,20 @@ export class AuthController {
     @MessagePattern({ cmd: 'login' })
     async login(data: any) {
         return this.authService.login(data);
+    }
+
+    @MessagePattern({ cmd: 'get_profile' })
+    async getProfile(data: any) {
+        return this.authService.getProfile(data);
+    }
+
+    @MessagePattern({ cmd: 'update_profile' })
+    async updateProfile(data: any) {
+        return this.authService.updateProfile(data);
+    }
+
+    @MessagePattern({ cmd: 'delete_profile' })
+    async deleteProfile(userId: any) {
+        return this.authService.deleteProfile(userId);
     }
 }

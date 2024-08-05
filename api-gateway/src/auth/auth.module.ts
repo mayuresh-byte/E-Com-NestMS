@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -16,7 +17,11 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
           },
         },
       }
-    ])
+    ]),
+    JwtModule.register({
+      global: true,
+      signOptions: { expiresIn: '60m' },
+    }),
   ],
   controllers: [AuthController]
 })
