@@ -6,6 +6,4 @@ import { EventPattern, MessagePattern } from '@nestjs/microservices';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  
-
 }
