@@ -19,4 +19,7 @@ export class User {
 
   @Column()
   mobile: string;
+
+  @Column({ default: 'customer' })
+  role: string;
 }
