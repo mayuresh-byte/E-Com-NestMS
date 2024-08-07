@@ -1,12 +1,13 @@
-import { Body, Controller, Inject, Post, UseGuards, UsePipes, ValidationPipe, Request } from '@nestjs/common';
+import { Body, Controller, Inject, Post, UseGuards, UsePipes, ValidationPipe, Request, Get, Param, ParseIntPipe, Patch, Delete } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { CreateProductDto } from './dto/createProduct.dto';
 import { Roles } from './roles.decorator';
 import { RolesGuard } from './roles.guard';
+import { HttpService } from '@nestjs/axios';
 
 @Controller('product')
 export class ProductController {
-    constructor(@Inject('PRODUCT_SERVICE') private readonly productService: ClientProxy) {}
+    constructor(@Inject('PRODUCT_SERVICE') private readonly productService: ClientProxy, private readonly httpService: HttpService) {}
 
     @Post()
     @Roles('admin')
@@ -19,4 +20,57 @@ export class ProductController {
             return {error: error}
         }
     }
+
+    @Get()
+    async findAllProducts() {
+        try {
+            return this.productService.send({cmd: 'find_all_products'}, {});
+        } catch (error) {
+            return {error: error}
+        }
+    }
+
+    @Get(':id')
+    async findById(@Param('id', ParseIntPipe) prod_id: number) {
+        try {
+            return this.productService.send({cmd: 'find_by_id'}, prod_id);
+        } catch (error) {
+            return {error: error}
+        }
+    }
+
+    @Patch(':id')
+    @Roles('admin')
+    @UseGuards(RolesGuard)
+    async updateProduct(@Param('id', ParseIntPipe) prod_id: number, @Body() updateProductData: CreateProductDto) {
+        try {
+            return this.productService.send({cmd: 'update_product'}, {prod_id, updateProductData});
+        } catch (error) {
+            return {error: error}
+        }
+    }
+
+    @Delete(':id')
+    @Roles('admin')
+    @UseGuards(RolesGuard)
+    async deleteProduct(@Param('id', ParseIntPipe) prod_id: number) {
+        try {
+            return this.productService.send({cmd: 'delete_product'}, prod_id);
+        } catch (error) {
+            return {error: error}
+        }
+    }
+
+    // @Get()
+    // async findAllProducts(@Request() req: any) {
+    //     try {
+    //        const allProducts = await this.httpService.axiosRef.get('http://localhost:8888/product');
+    //        console.log(allProducts.data);
+    //        return allProducts.data;
+    //     } catch (error) {
+    //         return {error: error}
+    //     }
+    // }
+
+
 }
