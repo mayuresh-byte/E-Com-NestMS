@@ -15,4 +15,9 @@ export class OrderController {
         const userInfo = data.userInfo;
         return this.orderService.createOrder(products, userInfo);
     }
+
+    @MessagePattern({cmd: 'cancel_order'})
+    async cancelOrder(data: number) {
+        return this.orderService.cancelOrder(data);
+    }
 }

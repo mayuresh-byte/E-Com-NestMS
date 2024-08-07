@@ -37,4 +37,23 @@ export class OrderService {
         await lastValueFrom(this.authService.emit({cmd: 'update_user_orders'}, {userId, orderId}));
         return newOrder;
     }
+
+    async cancelOrder(data: any) {
+        const order = await this.orderRepository.findOne({where: {
+            id: data.orderId
+        }});
+
+        if (!order) {
+            throw new Error('Order not found');
+        }
+
+        if(data.userInfo.sub !== order.userId) {
+            return "Nikal Bhai...Dusron ke orders delete krta hai !!";
+        }
+
+        await this.orderRepository.delete(data.orderId);
+
+        this.authService.emit({cmd: 'remove_user_order'}, {orderId: data.orderId, userId: order.userId});
+        return "Order cancelled !!";
+    }
 }

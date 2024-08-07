@@ -81,4 +81,17 @@ export class AuthService {
         user.orderIds.push(data.orderId);
         return this.userRepository.save(user);
     }
+
+    async cancelUserOrder(data: any) {
+        const user = await this.userRepository.findOne({where: {
+            id: data.userId
+        }});
+
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        user.orderIds = user.orderIds.filter(orderId => orderId !== data.orderId);
+        this.userRepository.save(user);
+    }
 }

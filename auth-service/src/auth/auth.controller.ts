@@ -35,4 +35,9 @@ export class AuthController {
     async updateUserOrders(data: any) {
         return this.authService.updateUserOrders(data);
     }
+
+    @EventPattern({ cmd: 'remove_user_order' })
+    async cancelUserOrder(data: any) {
+        return this.authService.cancelUserOrder(data);
+    }
 }

@@ -15,7 +15,7 @@ export class Order {
   totalPrice: number;
 
   @Column({ default: 'pending' })
-  status: string;
+  status: string; // Possible values: pending, processing, shipped, delivered, cancelled
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
