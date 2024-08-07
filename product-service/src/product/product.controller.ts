@@ -30,4 +30,14 @@ export class ProductController {
     async deleteProduct(data: any) {
         return this.productService.deleteProduct(data);
     }
+
+    @MessagePattern({cmd: 'add_review'})
+    async addReview(data: any) {
+        return this.productService.addReview(data);
+    }
+
+    @MessagePattern({cmd: 'get_avg_rating'})
+    async getAverageRating(prod_id: number) {
+        return this.productService.getAverageRating(prod_id);
+    }
 }

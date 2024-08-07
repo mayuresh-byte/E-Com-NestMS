@@ -19,4 +19,13 @@ export class Product {
 
   @Column({ nullable: false })
   category: string;
+
+  @Column('int', { array: true, default: [] })
+  ratings: number[];
+
+  @Column('text', { array: true, default: [] })
+  comments: string[];
+
+  @Column('int', { array: true, default: [] })
+  userIds: number[];
 }

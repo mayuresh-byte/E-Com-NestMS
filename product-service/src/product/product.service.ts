@@ -63,4 +63,37 @@ export class ProductService {
         const deleteProd = await this.productRepository.delete(prod_id);
         return "Your product is deleted";
     }
+
+    async addReview(data: any) {
+        const productId = data.prod_id;
+        const userId = data.userId;
+        const product = await this.productRepository.findOne({ where: { id: productId } });
+
+        if (!product) {
+            throw new Error('Product not found');
+        }
+
+        if (product.userIds.includes(userId)) {
+            throw new Error('User has already reviewed this product');
+        }
+
+        product.ratings.push(data.review.rating);
+        product.comments.push(data.review.comment);
+        product.userIds.push(data.userId);
+        
+        return this.productRepository.save(product);
+    }
+
+    async getAverageRating(prod_id: number) {
+        const product = await this.productRepository.findOne({ where: { id: prod_id } });
+        const result = await this.productRepository.query(
+            `SELECT AVG(rating) as averageRating
+             FROM unnest($1::int[]) as rating`,
+            [product.ratings]
+        );
+
+        return {
+            [`Average Rating of product with id ${prod_id}`]: result[0].averagerating || 0
+        };
+    }
 }

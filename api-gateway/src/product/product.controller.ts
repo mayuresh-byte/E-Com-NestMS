@@ -1,9 +1,10 @@
-import { Body, Controller, Inject, Post, UseGuards, UsePipes, ValidationPipe, Request, Get, Param, ParseIntPipe, Patch, Delete } from '@nestjs/common';
+import { Body, Controller, Inject, Post, UseGuards, UsePipes, ValidationPipe, Request, Get, Param, ParseIntPipe, Patch, Delete, Put } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { CreateProductDto } from './dto/createProduct.dto';
 import { Roles } from './roles.decorator';
 import { RolesGuard } from './roles.guard';
 import { HttpService } from '@nestjs/axios';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('product')
 export class ProductController {
@@ -56,6 +57,28 @@ export class ProductController {
     async deleteProduct(@Param('id', ParseIntPipe) prod_id: number) {
         try {
             return this.productService.send({cmd: 'delete_product'}, prod_id);
+        } catch (error) {
+            return {error: error}
+        }
+    }
+
+    @Post(':id/review')
+    @UseGuards(AuthGuard)
+    async addReview(@Param('id', ParseIntPipe) prod_id: number, @Request() req: any, @Body() review: any) {
+        try {
+            const userId = req.user.sub;
+            const data = {prod_id, userId, review}
+            return this.productService.send({cmd: 'add_review'}, data);
+        } catch (error) {
+            return {error: error}
+        }
+    }
+
+    @Get(':id/review')
+    @UseGuards(AuthGuard)
+    async getAverageRating(@Param('id', ParseIntPipe) prod_id: number) {
+        try {
+            return this.productService.send({cmd: 'get_avg_rating'}, prod_id);
         } catch (error) {
             return {error: error}
         }
