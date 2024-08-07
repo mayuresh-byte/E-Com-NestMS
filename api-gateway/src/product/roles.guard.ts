@@ -25,6 +25,7 @@ export class RolesGuard implements CanActivate {
                     secret:'JWT_SCRET_KEY'
                 }
             );
+            request['user'] = payload;
             const userInfo = await lastValueFrom(this.authClient.send({ cmd: 'get_profile' }, payload.sub));
             return requiredRoles.includes(userInfo.role);
         } catch {

@@ -68,4 +68,17 @@ export class AuthService {
         const result = await this.userRepository.delete(userId);
         return result;
     }
+
+    async updateUserOrders(data: any) {
+        const user = await this.userRepository.findOne({where: {
+            id: data.userId
+        }});
+
+        if(!user) {
+            throw new Error('User not found');
+        }
+
+        user.orderIds.push(data.orderId);
+        return this.userRepository.save(user);
+    }
 }

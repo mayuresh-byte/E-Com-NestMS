@@ -30,4 +30,9 @@ export class AuthController {
     async deleteProfile(userId: any) {
         return this.authService.deleteProfile(userId);
     }
+
+    @EventPattern({ cmd: 'update_user_orders' })
+    async updateUserOrders(data: any) {
+        return this.authService.updateUserOrders(data);
+    }
 }

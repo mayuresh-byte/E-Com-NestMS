@@ -22,4 +22,7 @@ export class User {
 
   @Column({ default: 'customer' })
   role: string;
+
+  @Column('int', { array: true, default: [] })
+  orderIds: number[];
 }

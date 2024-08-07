@@ -8,17 +8,14 @@ export class Order {
   @Column()
   userId: number;
 
-  @Column()
-  productId: number;
-
-  @Column()
-  quantity: number;
+  @Column('jsonb')
+  products: { productId: number; quantity: number }[];
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   totalPrice: number;
 
   @Column({ default: 'pending' })
-  status: string; // Possible values: pending, processing, shipped, delivered, cancelled
+  status: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
