@@ -47,13 +47,34 @@ export class OrderService {
             throw new Error('Order not found');
         }
 
-        if(data.userInfo.sub !== order.userId) {
-            return "Nikal Bhai...Dusron ke orders delete krta hai !!";
-        }
+        // if(data.userInfo.sub !== order.userId) {
+        //     return "Nikal Bhai...Dusron ke orders delete krta hai !!";
+        // }
 
         await this.orderRepository.delete(data.orderId);
 
         this.authService.emit({cmd: 'remove_user_order'}, {orderId: data.orderId, userId: order.userId});
         return "Order cancelled !!";
+    }
+
+    async getOrderById(data: any) {
+        const order = await this.orderRepository.findOne({where: {
+            id: data.orderId
+        }});
+
+        return {
+            order: order
+        }
+    }
+
+    async getOrderHistory(userInfo: any) {
+        try {
+            const orderHistory = await this.orderRepository.find({where: {
+                userId: userInfo.sub
+            }})
+            return orderHistory;
+        } catch (error) {
+            return error;
+        }
     }
 }

@@ -1,9 +1,10 @@
-import { Controller } from '@nestjs/common';
+import { Controller, UseGuards } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { OrderService } from './order.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './order.entity';
 import { Repository } from 'typeorm';
+import { UserAuthorizationGuard } from './guards/userAuthz.guard';
 
 @Controller('order')
 export class OrderController {
@@ -19,5 +20,24 @@ export class OrderController {
     @MessagePattern({cmd: 'cancel_order'})
     async cancelOrder(data: number) {
         return this.orderService.cancelOrder(data);
+    }
+
+    @UseGuards(UserAuthorizationGuard)
+    @MessagePattern({cmd: 'get_order_byId'})
+    async getOrderById(data: any) {
+        try {
+            return this.orderService.getOrderById(data);
+        } catch (error) {
+            return  {error: error.message };
+        }
+    }
+
+    @MessagePattern({cmd: 'get_order_history'})
+    async getOrderHistory(userInfo: any) {
+        try {
+            return this.orderService.getOrderHistory(userInfo);
+        } catch (error) {
+            return  {error: error.message };
+        }
     }
 }

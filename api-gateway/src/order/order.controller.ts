@@ -8,7 +8,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('order')
 export class OrderController {
-    constructor(@Inject('ORDER_SERVICE') private readonly productService: ClientProxy) {}
+    constructor(@Inject('ORDER_SERVICE') private readonly orderService: ClientProxy) {}
 
     @Post()
     @Roles('customer')
@@ -18,7 +18,7 @@ export class OrderController {
         try {
             const products = createOrderData.products;
             const userInfo = req.user;
-            return this.productService.send({cmd: 'create_order'}, {products, userInfo});
+            return this.orderService.send({cmd: 'create_order'}, {products, userInfo});
         } catch (error) {
             return error;
         }
@@ -29,7 +29,29 @@ export class OrderController {
     async cancelOrder(@Param('id', ParseIntPipe) orderId: number, @Request() req) {
         try {
             const userInfo = req.user;
-            return this.productService.send({cmd: 'cancel_order'}, {orderId, userInfo});
+            return this.orderService.send({cmd: 'cancel_order'}, {orderId, userInfo});
+        } catch (error) {
+            return error;
+        }
+    }
+
+    @Get('history')
+    @UseGuards(AuthGuard)
+    async getOrderHistory(@Request() req) {
+        try {
+            const userInfo = req.user;
+            return this.orderService.send({cmd: 'get_order_history'}, {userInfo});
+        } catch (error) {
+            return error;
+        }
+    }
+
+    @Get(':id')
+    @UseGuards(AuthGuard)
+    async getOrderById(@Param('id', ParseIntPipe) orderId: number, @Request() req) {
+        try {
+            const userInfo = req.user;
+            return this.orderService.send({cmd: 'get_order_byId'}, {orderId, userInfo});
         } catch (error) {
             return error;
         }
