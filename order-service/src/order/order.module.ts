@@ -4,6 +4,7 @@ import { OrderService } from './order.service';
 import { Order } from './order.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { OrderStatusService } from './order-status.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Order]),
@@ -34,6 +35,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     }
   ])],
   controllers: [OrderController],
-  providers: [OrderService]
+  providers: [OrderService] // OrderStatusService is a fun service. You can use it for notifaction triggering in the future
 })
 export class OrderModule {}
