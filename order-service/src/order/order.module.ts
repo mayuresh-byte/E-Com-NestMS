@@ -33,6 +33,19 @@ import { OrderStatusService } from './order-status.service';
         },
       },
     }
+  ]),
+  ClientsModule.register([
+    {
+      name: 'NOTIFICATION_SERVICE',
+      transport: Transport.RMQ,
+      options: {
+        urls: ['amqp://localhost:5672'],
+        queue: 'notification_queue',
+        queueOptions: {
+          durable: false,
+        },
+      },
+    }
   ])],
   controllers: [OrderController],
   providers: [OrderService] // OrderStatusService is a fun service. You can use it for notifaction triggering in the future

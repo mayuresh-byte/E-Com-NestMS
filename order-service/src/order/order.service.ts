@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class OrderService {
     constructor(@Inject('AUTH_SERVICE') private readonly authService: ClientProxy, @Inject('PRODUCT_SERVICE') private readonly productService: ClientProxy,
+        @Inject('NOTIFICATION_SERVICE') private readonly notificationService: ClientProxy,
         @InjectRepository(Order) private orderRepository: Repository<Order>) { }
 
     async fetchProductPrice(productId: number) {
@@ -34,11 +35,14 @@ export class OrderService {
         });
         const orderId = newOrder.id;
 
+        this.notificationService.emit({cmd: 'order_successful'}, {orderId, userInfo});
         await lastValueFrom(this.authService.emit({cmd: 'update_user_orders'}, {userId, orderId}));
         return newOrder;
     }
 
     async cancelOrder(data: any) {
+        const orderId = data.orderId;
+        const userInfo = data.userInfo;
         const order = await this.orderRepository.findOne({where: {
             id: data.orderId
         }});
@@ -54,6 +58,7 @@ export class OrderService {
         await this.orderRepository.delete(data.orderId);
 
         this.authService.emit({cmd: 'remove_user_order'}, {orderId: data.orderId, userId: order.userId});
+        this.notificationService.emit({cmd: 'order_cancelled'}, {orderId, userInfo});
         return "Order cancelled !!";
     }
 
